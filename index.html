@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f3e2ef">
+<title>Hue Hideout</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main class="game-shell">
+
+  <header class="topbar">
+    <a class="brand" href="#">HUE <span>HIDEOUT</span></a>
+    <div class="profile">
+      <span class="avatar">🦎</span>
+      <button id="player-btn" class="player-name" type="button">Explorer</button>
+    </div>
+    <div class="best">BEST <strong id="best-value">0</strong></div>
+    <button id="auth-toggle" class="login-btn" type="button">Sign in</button>
+  </header>
+
+  <section id="auth-card" class="overlay-card auth-card" hidden>
+    <button id="auth-close" class="close-x" type="button" aria-label="Close">✕</button>
+    <p class="kicker">SAVE YOUR PROGRESS</p>
+    <h1 id="auth-title">Welcome back</h1>
+    <p class="intro">Sign in with an email to keep your best score, daily streak and leaderboard spot on any device.</p>
+    <form id="auth-form">
+      <label for="auth-email">Email</label>
+      <input id="auth-email" type="email" placeholder="you@example.com" autocomplete="email">
+      <label for="auth-password">Password</label>
+      <input id="auth-password" type="password" placeholder="at least 6 characters" autocomplete="off">
+      <button id="auth-submit" class="primary" type="submit">Sign in <span>→</span></button>
+    </form>
+    <button id="auth-create" class="ghost-btn" type="button">Create a new account instead</button>
+    <p id="auth-msg" class="auth-msg"></p>
+  </section>
+
+  <section id="welcome" class="overlay-card">
+    <div class="welcome-lizard">🦎</div>
+    <p class="kicker">A COZY CAMOUFLAGE GAME</p>
+    <h1>Can you help your<br>chameleon blend in?</h1>
+    <p class="intro">An eagle is watching from above. Turn the color wheel and line up the three shade lines to copy the path color before the timer runs out.</p>
+    <label for="name-input">Name your chameleon</label>
+    <input id="name-input" maxlength="16" placeholder="e.g. Kiwi">
+    <button id="start-game" class="primary" type="button">Start adventure <span>→</span></button>
+    <p class="tiny">Plays instantly as a guest — sign in later to save your progress online.</p>
+    <div id="leaderboard" class="leaderboard" hidden>
+      <p class="kicker">LEADERBOARD</p>
+      <ol id="leader-list"></ol>
+    </div>
+  </section>
+
+  <section id="game" hidden>
+    <div class="game-frame">
+      <div id="scene" class="scene">
+        <div id="path" class="path"></div>
+        <span class="bush b1" aria-hidden="true"></span>
+        <span class="bush b2" aria-hidden="true"></span>
+        <div id="chameleon" class="chameleon walking" aria-label="A chameleon walking on the path, seen from above"></div>
+        <div id="eagle" class="eagle" aria-hidden="true"></div>
+        <div id="result-burst" class="result-burst" aria-live="polite"></div>
+        <div class="roundbar">
+          <div class="chip round-chip">ROUND <strong id="round">1</strong> / <span id="round-total">10</span></div>
+          <div class="chip best-chip">BEST <strong id="best-value-game">0</strong></div>
+          <div class="chip streak-chip">🔥 <strong id="streak-value">0</strong></div>
+          <div class="timer-wrap"><svg viewBox="0 0 36 36" class="timer"><path class="timer-track" d="M18 2.5a15.5 15.5 0 1 1 0 31a15.5 15.5 0 1 1 0-31"/><path id="timer-ring" class="timer-ring" pathLength="100" d="M18 2.5a15.5 15.5 0 1 1 0 31a15.5 15.5 0 1 1 0-31"/></svg><span id="seconds">15</span></div>
+        </div>
+      </div>
+
+      <aside class="picker-panel" aria-label="Color mixer">
+        <div class="swatches">
+          <div class="swatch target"><span id="target-dot"></span><div><p>TARGET PATH</p><strong id="target-value">—</strong></div></div>
+          <div class="swatch mix"><span id="mix-dot"></span><div><p>YOUR MIX</p><strong id="mix-value">—</strong></div></div>
+        </div>
+        <div class="wheel-wrap"><div id="color-wheel" class="color-wheel"><i id="wheel-dot"></i></div></div>
+        <div class="shade-lines">
+          <label>HUE <output id="hue-out">160°</output><input id="hue" type="range" min="0" max="360" value="160" step="1"></label>
+          <label>SATURATION <output id="sat-out">70%</output><input id="sat" type="range" min="0" max="100" value="70" step="1"></label>
+          <label>BRIGHTNESS <output id="val-out">75%</output><input id="val" type="range" min="10" max="100" value="75" step="1"></label>
+        </div>
+        <div class="match-bar"><span>MATCH</span><div class="bar"><i id="match-fill"></i></div><strong id="match-pct">0%</strong></div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="summary" class="overlay-card" hidden>
+    <div id="summary-icon" class="summary-icon">⭐</div>
+    <p class="kicker">RUN COMPLETE</p>
+    <h1 id="summary-title">Caught!</h1>
+    <p id="summary-copy" class="intro"></p>
+    <div class="score-row">
+      <div><span>ACCURACY</span><strong id="final-score">0%</strong></div>
+      <div><span>RATING</span><strong id="final-stars" class="star-rating"></strong></div>
+    </div>
+    <button id="play-again" class="primary" type="button">Play again <span>↻</span></button>
+    <button id="home-button" class="ghost-btn" type="button">⌂ Home</button>
+  </section>
+
+</main>
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app.js"></script>
+</body>
+</html>
